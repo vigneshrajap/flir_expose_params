@@ -1,0 +1,22 @@
+cd marianne_ws/
+source marianne_ws/devel/setup.bash
+
+roslaunch spinnaker_camera_driver stereo.launch 
+ 
+ cd marianne_bag
+rosbag record /sidecam/left/image_raw/compressed /sidecam/right/image_raw/compressed /camera/basler_camera/image_raw/compressed -o 3cams --chunksize=100000 
+rosbag record /sidecam/left/image_raw /sidecam/right/image_raw /camera/basler_camera/image_raw /os1_cloud_node/points -o 3cams --chunksize=100000
+
+rosrun rqt_image_view
+rosrun image_view image_view image:=/sidecam/left/image_raw/ compressed
+
+https://github.com/tuandle/flir_expose_params
+https://github.com/tuandle/basler_exposed_params
+
+how to run lidar:
+(plug in lidar power cable)
+sudo /etc/init.d/dnsmasq restart
+cd sensor_ws
+source devel/setup.bash
+roslaunch ouster_ros os1.launch
+topic to record: os1_cloud_node/points
