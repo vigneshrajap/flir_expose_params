@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<!--
+Software License Agreement (BSD)
+
+\file      stereo.launch
+\authors   Michael Hosmar <mhosmar@clearpathrobotics.com>
+\copyright Copyright (c) 2018, Clearpath Robotics, Inc., All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that
+the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the
+   following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the 
+   following disclaimer in the documentation and/or other materials provided with the distribution.
+ * Neither the name of Clearpath Robotics nor the names of its contributors may be used to endorse or promote
+   products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WAR-
+RANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, IN-
+DIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+<launch>
+  <!-- Common parameters -->
+  <arg name="camera_name" default="stereo" />
+  <arg name="frame_rate" default="4" />
+
+  <arg name="left_camera_serial" default="18080387" />  
+  <arg name="left_camera_calibrated" default="0" />
+
+  <arg name="right_camera_serial" default="17513771" />
+  <arg name="right_camera_calibrated" default="0" />
+
+  <arg name="external_trigger" default="Off"/>
+  <arg name="exposure_duration" default="2000"/>
+  <arg name="img_coding" default="Mono16"/>
+  <arg name="gain_control" default="Once"/>
+  <arg name="gain_value" default="23"/>
+  <arg name="binning_x" default="2"/>
+  <arg name="binning_y" default="2"/>
+  <arg name="x_offset" default="60"/> <!-- 512-->
+  <arg name="y_offset" default="0"/> <!-- 384-->
+  <arg name="x_decimation" default = "1"/>
+  <arg name="y_decimation" default = "1"/>
+  <arg name="img_width" default="900"/> <!-- 1024-->
+  <arg name="img_height" default="768"/> <!-- 768-->
+
+  <node pkg="nodelet" type="nodelet" name="camera_nodelet_manager" args="manager" output="screen">
+    <param name="num_worker_threads" value="8" />
+  </node>
+  
+  <group ns="$(arg camera_name)" >
+      
+      <!-- <node pkg="nodelet" type="nodelet" name="tc_nodelet" args="load time_correction/TimeCorrectionNodelet /camera_nodelet_manager" output="screen">
+        <param name="queue_size" value="50" />
+      </node> -->
+      
+    <group ns="left" >
+        <node pkg="nodelet" type="nodelet" name="camera_nodelet"
+              args="load spinnaker_camera_driver/SpinnakerCameraNodelet /camera_nodelet_manager" output="screen">
+          <param name="frame_id" value="camera_left" />
+          <param name="serial" value="$(arg left_camera_serial)" />
+          <param name="acquisition_frame_rate_enable" value="True"/>
+          <param name="acquisition_frame_rate" value="$(arg frame_rate)"/>
+          <param name="auto_gain" value="$(arg gain_control)"/>
+          <param name="gain" value="$(arg gain_value)"/>
+
+          <!--Trigger-->
+          
+          <param name="multi_cam_mode" value="true"/> <!--do not implement yet-->
+          <param name="enable_trigger" value="$(arg external_trigger)" />
+          <param name="trigger_source" value="Line3" />
+          <param name="trigger_activation_mode" value="RisingEdge" />
+          <param name="trigger_overlap_mode" value="ReadOut" />
+
+          <!--grab image -->
+          
+          <param name="exposure_auto" value="Off"/>
+          <param name="exposure_time" value="$(arg exposure_duration)"/>
+          <param name="auto_white_balance" value="Once"/>
+          <param name="auto_exposure_time_upper_limit" value="15000"/>
+          <param name="brightness" value="0.0"/>
+          <param name ="gamma_enable" value="True"/>
+          <param name ="gamma" value="0.7"/>
+          <param name="image_format_roi_width" value="$(arg img_width)"/> <!--max size: 2048x1536 -->
+          <param name="image_format_roi_height" value="$(arg img_height)"/>
+          <param name="image_format_x_offset" value="$(arg x_offset)"/> <!-- 512-->
+          <param name="image_format_y_offset" value="$(arg y_offset)"/> <!-- 256-->
+          <param name="image_format_color_coding" value="$(arg img_coding)"/>
+          <param name="image_format_x_binning" value="$(arg binning_x)"/>
+          <param name="image_format_y_binning" value="$(arg binning_y)"/>
+          <param name="image_format_x_decimation" value="$(arg x_decimation)"/>
+          <param name="image_format_y_decimation" value="$(arg y_decimation)"/>
+          
+          <param name="camera_info_url" if="$(arg left_camera_calibrated)"
+                 value="file://$(env HOME)/.ros/camera_info/$(arg left_camera_serial).yaml" />
+        </node>
+        <!-- <node pkg="nodelet" type="nodelet" name="image_proc_debayer"
+            args="load image_proc/debayer /camera_nodelet_manager">
+        </node> -->
+    </group>
+
+    
+  </group>
+</launch>
