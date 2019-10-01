@@ -59,8 +59,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "spinnaker_camera_driver/set_property.h"
 
 // Spinnaker SDK
-#include "Spinnaker.h"
-#include "SpinGenApi/SpinnakerGenApi.h"
+#include "spinnaker/Spinnaker.h"
+#include "spinnaker/SpinGenApi/SpinnakerGenApi.h"
 
 namespace spinnaker_camera_driver
 {

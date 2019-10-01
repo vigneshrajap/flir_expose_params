@@ -26,7 +26,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 <launch>
   <!-- Common parameters -->
   <arg name="camera_name" default="sidecam" />
-  <arg name="frame_rate" default="5" />
+  <arg name="frame_rate" default="1" /> #Default:5
 
   <arg name="right_camera_serial" default="18080387" />
   <arg name="right_camera_calibrated" default="0" />
@@ -76,7 +76,6 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 
   <group ns="$(arg camera_name)" >
 
-    <group ns="left" >
         <node pkg="nodelet" type="nodelet" name="camera_nodelet"
               args="load spinnaker_camera_driver/SpinnakerCameraNodelet /camera_nodelet_manager" output="screen">
           <param name="frame_id" value="camera_left" />
@@ -127,57 +126,4 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
         </node> -->
     </group>
 
-    <group ns="right" >
-        <node pkg="nodelet" type="nodelet" name="camera_nodelet"
-              args="load spinnaker_camera_driver/SpinnakerCameraNodelet /camera_nodelet_manager" output="screen">
-          <param name="frame_id" value="camera_right" />
-          <param name="serial" value="$(arg right_camera_serial)" />
-          <param name="acquisition_frame_rate_enable" value="True"/>
-          <param name="acquisition_frame_rate" value="$(arg frame_rate)"/>
-          <param name="auto_gain" value="$(arg gain_control)"/>
-          <param name="gain" value="$(arg gain_value)"/>
-
-          <!--Trigger-->
-          <!--grab image -->
-          <param name="saturation_enable" value="$(arg enabling_saturation)"/>
-          <param name="saturation" value="$(arg saturation_value)"/>
-
-          <param name="rgb_transform_light_source" value="$(arg rgb_transform_light_source_select)"/>
-          <param name="balance_white_auto_lower_limit" value="$(arg balance_white_auto_lower_limit_value)"/>
-          <param name="balance_white_auto_upper_limit" value="$(arg balance_white_auto_upper_limit_value)"/>
-          <param name="balance_white_auto_profile" value="$(arg balance_white_auto_profile_select)"/>
-
-          <param name="saturation_enable" value="$(arg enabling_saturation)"/>
-          <param name="exposure_auto" value="$(arg auto_exposure_enable)"/>
-          <param name="user_ev_compensation" value="$(arg set_ev)"/>
-          <param name="user_roi_enable" value="$(arg enable_user_roi)"/>
-          <param name="user_roi_width" value="$(arg set_user_roi_width)"/>
-          <param name="user_roi_height" value="$(arg set_user_roi_height)"/>
-          <param name="user_roi_offsetX" value="$(arg set_user_roi_offsetX)"/>
-          <param name="user_roi_offsetY" value="$(arg set_user_roi_offsetY)"/>
-
-          <param name="auto_white_balance" value="$(arg auto_white_balance_control)"/>
-          <param name="auto_exposure_time_upper_limit" value="$(arg auto_exposure_time_upper_limit_value)"/>
-          <param name="brightness" value="0.0"/>
-          <param name ="gamma_enable" value="$(arg gamma_enable_value)"/>
-          <param name ="gamma" value="$(arg gamma_value)"/>
-          <param name="image_format_roi_width" value="$(arg img_width)"/> <!--max size: 2048x1536 -->
-          <param name="image_format_roi_height" value="$(arg img_height)"/>
-          <param name="image_format_x_offset" value="$(arg x_offset)"/> <!-- 512-->
-          <param name="image_format_y_offset" value="$(arg y_offset)"/> <!-- 256-->
-          <param name="image_format_color_coding" value="$(arg img_coding)"/>
-          <param name="image_format_x_binning" value="$(arg binning_x)"/>
-          <param name="image_format_y_binning" value="$(arg binning_y)"/>
-          <param name="image_format_x_decimation" value="$(arg x_decimation)"/>
-          <param name="image_format_y_decimation" value="$(arg y_decimation)"/>
-
-          <param name="camera_info_url" if="$(arg right_camera_calibrated)"
-                 value="file://$(env HOME)/.ros/camera_info/$(arg right_camera_serial).yaml" />
-        </node>
-
-        <!-- <node pkg="nodelet" type="nodelet" name="image_proc_debayer"
-            args="load image_proc/debayer /camera_nodelet_manager">
-        </node> -->
-    </group>
-  </group>
 </launch>

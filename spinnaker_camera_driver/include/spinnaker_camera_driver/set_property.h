@@ -26,8 +26,8 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 #define SPINNAKER_CAMERA_DRIVER_SET_PROPERTY_H
 
 // Spinnaker SDK
-#include "Spinnaker.h"
-#include "SpinGenApi/SpinnakerGenApi.h"
+#include "spinnaker/Spinnaker.h"
+#include "spinnaker/SpinGenApi/SpinnakerGenApi.h"
 
 #include <string>
 
